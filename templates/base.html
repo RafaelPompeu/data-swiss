@@ -18,6 +18,7 @@
             <nav class="main-nav">
                 <a href="{{ url_for('main.json_formatter') }}" class="{{ 'active' if request.endpoint == 'main.json_formatter' else '' }}">Formatador JSON</a>
                 <a href="{{ url_for('main.sql_formatter') }}" class="{{ 'active' if request.endpoint == 'main.sql_formatter' else '' }}">Formatador SQL</a>
+                <a href="{{ url_for('main.cron_guru') }}" class="{{ 'active' if request.endpoint == 'main.cron_guru' else '' }}">Interpretador Cron</a>
             </nav>
         </div>
     </header>

@@ -664,3 +664,28 @@ tr:nth-child(even) {
         padding: 0.7em 1.2em;
     }
 }
+
+.cron-fields-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1.2rem;
+}
+.cron-fields-row > div {
+    flex: 1;
+    min-width: 110px;
+    max-width: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.cron-fields-row label {
+    margin-bottom: 0.2rem;
+    text-align: center;
+}
+.cron-fields-row input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}

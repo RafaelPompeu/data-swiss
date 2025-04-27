@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Interpretador Cron - DataSwiss{% endblock %}
+
+{% block content %}
+    <h2 style="text-align:center;">Interpretador Cron</h2>
+    <p style="text-align:center;">Preencha cada campo para montar sua expressão cron. Use <code>*</code> para "qualquer valor".</p>
+    <form method="post" id="cron-form">
+        <div class="formatter-container" style="flex-direction: column; align-items: center;">
+            <div class="input-area" style="width:100%; display:flex; justify-content:center;">
+                <div class="cron-fields-row" style="justify-content:center;">
+                    <div>
+                        <label for="minute">MINUTO</label>
+                        <input type="text" id="minute" name="minute" placeholder="0-59 ou *" value="{{ cron_parts.minute if cron_parts else '' }}" pattern="^[\d\*,\/\-]+$" title="Apenas números, *, /, - e , são permitidos" required>
+                    </div>
+                    <div>
+                        <label for="hour">HORA</label>
+                        <input type="text" id="hour" name="hour" placeholder="0-23 ou *" value="{{ cron_parts.hour if cron_parts else '' }}" pattern="^[\d\*,\/\-]+$" title="Apenas números, *, /, - e , são permitidos" required>
+                    </div>
+                    <div>
+                        <label for="day">DIA DO MÊS</label>
+                        <input type="text" id="day" name="day" placeholder="1-31 ou *" value="{{ cron_parts.day if cron_parts else '' }}" pattern="^[\d\*,\/\-]+$" title="Apenas números, *, /, - e , são permitidos" required>
+                    </div>
+                    <div>
+                        <label for="month">MÊS</label>
+                        <input type="text" id="month" name="month" placeholder="1-12 ou *" value="{{ cron_parts.month if cron_parts else '' }}" pattern="^[\d\*,\/\-]+$" title="Apenas números, *, /, - e , são permitidos" required>
+                    </div>
+                    <div>
+                        <label for="weekday">SEMANA</label>
+                        <input type="text" id="weekday" name="weekday" placeholder="0-6 ou *" value="{{ cron_parts.weekday if cron_parts else '' }}" pattern="^[\d\*,\/\-]+$" title="Apenas números, *, /, - e , são permitidos" required>
+                    </div>
+                </div>
+            </div>
+            <div class="submit-button-container" style="justify-content:center;">
+                <button type="submit">INTERPRETAR</button>
+            </div>
+            <div class="output-area" style="align-items:center;">
+                <label for="cron_expr" style="text-align:center;">EXPRESSÃO CRON MONTADA:</label>
+                <input type="text" id="cron_expr" readonly value="{{ cron_expr }}" style="text-align:center;">
+                <label for="cron_human" style="text-align:center;">DESCRIÇÃO:</label>
+                <textarea id="cron_human" rows="4" readonly style="text-align:center;">{{ cron_human }}</textarea>
+                <div class="copy-button-container">
+                    <button type="button" class="copy-button" id="copy-cron-button" data-target="cron_human" title="Copiar descrição">Copiar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <script>
+        // Impede digitação de caracteres inválidos nos campos cron
+        document.querySelectorAll('#minute, #hour, #day, #month, #weekday').forEach(function(input) {
+            input.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9\*,\/\-]/g, '');
+            });
+        });
+    </script>
+{% endblock %}

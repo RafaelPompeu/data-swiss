@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, flash
 import json
 import sqlparse
+from cron_descriptor import get_description, ExpressionDescriptor
+import re
 
 main_bp = Blueprint('main', __name__)
 
@@ -50,3 +52,152 @@ def sql_formatter():
             flash(error, 'error')
 
     return render_template('sql_formatter.html', input_sql=input_sql, formatted_sql=formatted_sql)
+
+def traduzir_cron_descricao(desc):
+    # Traduções simples
+    traducoes = [
+        (r"\bEvery minute\b", "A cada minuto"),
+        (r"\bEvery hour\b", "A cada hora"),
+        (r"\bEvery day\b", "Todo dia"),
+        (r"\bEvery month\b", "Todo mês"),
+        (r"\bEvery year\b", "Todo ano"),
+        (r"\bAt\b", "Às"),
+        (r"\bat\b", "às"),
+        (r"\bAnd\b", "e"),
+        (r"\band\b", "e"),
+        (r"\bbetween\b", "entre"),
+        (r"\bthrough\b", "até"),
+        (r"\bof the month\b", "do mês"),
+        (r"\bof\b", "de"),
+        (r"\bAM\b", "da manhã"),
+        (r"\bPM\b", "da tarde"),
+        (r"\bMonday\b", "segunda-feira"),
+        (r"\bTuesday\b", "terça-feira"),
+        (r"\bWednesday\b", "quarta-feira"),
+        (r"\bThursday\b", "quinta-feira"),
+        (r"\bFriday\b", "sexta-feira"),
+        (r"\bSaturday\b", "sábado"),
+        (r"\bSunday\b", "domingo"),
+        (r"\bJanuary\b", "janeiro"),
+        (r"\bFebruary\b", "fevereiro"),
+        (r"\bMarch\b", "março"),
+        (r"\bApril\b", "abril"),
+        (r"\bMay\b", "maio"),
+        (r"\bJune\b", "junho"),
+        (r"\bJuly\b", "julho"),
+        (r"\bAugust\b", "agosto"),
+        (r"\bSeptember\b", "setembro"),
+        (r"\bOctober\b", "outubro"),
+        (r"\bNovember\b", "novembro"),
+        (r"\bDecember\b", "dezembro"),
+        (r"\b, ", ", "),
+        (r"\.", "."),
+    ]
+
+    # Horários tipo 10:00 AM/PM
+    def traduzir_horario(match):
+        hora, minuto, periodo = match.groups()
+        hora = int(hora)
+        if periodo == "PM" and hora != 12:
+            hora += 12
+        elif periodo == "AM" and hora == 12:
+            hora = 0
+        return f"{hora:02d}:{minuto}"
+
+    desc = re.sub(r'(\d{1,2}):(\d{2}) (AM|PM)', traduzir_horario, desc)
+
+    # Tradução de padrões compostos
+    desc = re.sub(r'on day (\d+) of the month', r'no dia \1 do mês', desc)
+    desc = re.sub(r'on days? ([\d,-]+) of the month', r'nos dias \1 do mês', desc)
+    desc = re.sub(r'on (\d{1,2}):(\d{2})', r'às \1:\2', desc)
+
+    # "only on Monday" -> "somente na segunda-feira"
+    desc = re.sub(r'only on ([a-zA-Z-]+)', r'somente na \1', desc)
+    # "only on <mês>" ou "only in <mês>" -> "somente em <mês>"
+    desc = re.sub(
+        r'only (on|in) (janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)',
+        r'somente em \2', desc, flags=re.IGNORECASE)
+    # "only <mês>" -> "somente em <mês>"
+    desc = re.sub(
+        r'only (janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)',
+        r'somente em \1', desc, flags=re.IGNORECASE)
+    # "only <dia-da-semana>" -> "somente na <dia-da-semana>"
+    desc = re.sub(
+        r'only (segunda-feira|terça-feira|quarta-feira|quinta-feira|sexta-feira|sábado|domingo)',
+        r'somente na \1', desc, flags=re.IGNORECASE)
+    # Corrige "somente na em" para "somente em"
+    desc = re.sub(r'somente na em', 'somente em', desc)
+    desc = re.sub(r'somente na\s+em', 'somente em', desc)
+    # Remove "only in <mês>" que não foi traduzido por erro de case
+    desc = re.sub(
+        r'only in (janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)',
+        r'somente em \1', desc, flags=re.IGNORECASE)
+
+    # "on <mês>" ou "in <mês>" -> "em <mês>"
+    desc = re.sub(
+        r'(on|in) (janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)',
+        r'em \2', desc, flags=re.IGNORECASE)
+    # "on <dia-da-semana>" -> "na <dia-da-semana>"
+    desc = re.sub(
+        r'on (segunda-feira|terça-feira|quarta-feira|quinta-feira|sexta-feira|sábado|domingo)',
+        r'na \1', desc, flags=re.IGNORECASE)
+
+    # Traduções simples
+    for padrao, pt in traducoes:
+        desc = re.sub(padrao, pt, desc)
+
+    # Ajustes finais para conectores e fluidez
+    desc = desc.replace(", e", " e")
+    desc = desc.replace(",,", ",")
+    desc = desc.replace("  ", " ")
+    desc = desc.strip()
+    # Primeira letra maiúscula
+    if desc:
+        desc = desc[0].upper() + desc[1:]
+    return desc
+
+def validar_campo_cron(valor, campo):
+    # Define padrões válidos para cada campo do crontab
+    padroes = {
+        'minute': r'^[\d\*,\/\-]+$',
+        'hour': r'^[\d\*,\/\-]+$',
+        'day': r'^[\d\*,\/\-]+$',
+        'month': r'^[\d\*,\/\-]+$',
+        'weekday': r'^[\d\*,\/\-]+$',
+    }
+    # Aceita apenas números, *, /, - e ,
+    if not re.match(padroes[campo], valor):
+        return False
+    return True
+
+@main_bp.route('/cron-guru', methods=['GET', 'POST'])
+def cron_guru():
+    cron_parts = {
+        'minute': '',
+        'hour': '',
+        'day': '',
+        'month': '',
+        'weekday': ''
+    }
+    cron_expr = ""
+    cron_human = ""
+    error = None
+    if request.method == 'POST':
+        invalido = False
+        for part in cron_parts:
+            valor = request.form.get(part, '').strip() or '*'
+            if not validar_campo_cron(valor, part):
+                error = f"Campo '{part.upper()}' contém caracteres inválidos."
+                flash(error, 'error')
+                invalido = True
+            cron_parts[part] = valor
+        if invalido:
+            return render_template('cron_guru.html', cron_parts=cron_parts, cron_expr="", cron_human="")
+        cron_expr = f"{cron_parts['minute']} {cron_parts['hour']} {cron_parts['day']} {cron_parts['month']} {cron_parts['weekday']}"
+        try:
+            cron_human = ExpressionDescriptor(cron_expr).get_description()
+            cron_human = traduzir_cron_descricao(cron_human)
+        except Exception as e:
+            error = f"Expressão cron inválida: {e}"
+            flash(error, 'error')
+    return render_template('cron_guru.html', cron_parts=cron_parts, cron_expr=cron_expr, cron_human=cron_human)
