@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}Visualizador Parquet - DataSwiss{% endblock %}
+
+{% block content %}
+<h2>Visualizador Parquet</h2>
+<form method="post" enctype="multipart/form-data" id="parquet-upload-form" {% if parquet_file_id %}style="display:none;"{% endif %}>
+    <label for="parquet_file"><strong>Selecione um arquivo Parquet:</strong></label>
+    <input type="file" id="parquet_file" name="parquet_file" accept=".parquet" required>
+    <button type="submit">Enviar</button>
+</form>
+
+{% if error %}
+    <div class="flash error">{{ error }}</div>
+{% endif %}
+
+{% if total_count is not none %}
+    <div style="margin: 1.2em 0 0.5em 0; font-weight: bold;">
+        Total de registros: {{ total_count }}
+    </div>
+{% endif %}
+
+{% if table_html %}
+    <h3>Primeiras 10 linhas</h3>
+    <div style="overflow-x:auto;">{{ table_html|safe }}</div>
+{% endif %}
+
+{% if dicionario %}
+    <h3>Dicionário de Dados</h3>
+    <table class="parquet-table">
+        <thead>
+            <tr>
+                <th>Coluna</th>
+                <th>Tipo</th>
+                <th>Count</th>
+                <th>Distinct</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in dicionario %}
+            <tr>
+                <td>{{ item.col }}</td>
+                <td>{{ item.dtype }}</td>
+                <td>{{ item.count }}</td>
+                <td>{{ item.distinct }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% if columns %}
+    <form method="post" enctype="multipart/form-data" style="margin-top:1.2em; display:flex; align-items:center; gap:1.2em;">
+        <input type="hidden" name="parquet_file_id" value="{{ parquet_file_id }}">
+        <label for="selected_col_select" style="margin:0;"><strong>Coluna:</strong></label>
+        <select name="selected_col" id="selected_col_select" required style="font-weight:bold; font-family:'Arial',sans-serif; border:3px solid #000; box-shadow:4px 4px 0 #000; border-radius:0; background:#fff; color:#4B2991; padding:0.5em 1em; font-size:1.1em; outline:none;">
+            <option value="">-- Escolha uma coluna --</option>
+            {% for col in columns %}
+                <option value="{{ col }}" {% if selected_col == col %}selected{% endif %}>{{ col }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" style="background:#ffcc00; color:#000; border:3px solid #000; box-shadow:4px 4px 0 #000; border-radius:0; font-weight:bold; font-size:1.15em; padding:0.7em 2.2em; text-transform:uppercase; font-family:'Arial',sans-serif; cursor:pointer; transition:background 0.1s,transform 0.1s,box-shadow 0.1s;">VER GRÁFICO</button>
+    </form>
+{% endif %}
+
+{% if freq_data %}
+    <h3>Gráfico de Frequência (Top 30)</h3>
+    {% if distinct_total is not none %}
+        <div style="margin-bottom:0.7em; font-size:1.05em;">
+            Distinct total em <b>{{ selected_col }}</b>: {{ distinct_total }}
+        </div>
+    {% endif %}
+    <div id="freq-chart" style="background:#fff; border:3px solid #000; box-shadow:6px 6px 0 #000; padding:1.2em 0 0.5em 0; display:flex; justify-content:center;">
+        <!-- SVG será inserido aqui -->
+    </div>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        const data = {{ freq_data|tojson }};
+        const width = 950, height = 480, margin = {top: 40, right: 20, bottom: 120, left: 70};
+        const svg = d3.select("#freq-chart")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .style("background", "#fff");
+
+        const x = d3.scaleBand()
+            .domain(data.map(d => d.key))
+            .range([margin.left, width - margin.right])
+            .padding(0.1);
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.value)]).nice()
+            .range([height - margin.bottom, margin.top]);
+
+        svg.append("g")
+            .selectAll("rect")
+            .data(data)
+            .join("rect")
+            .attr("x", d => x(d.key))
+            .attr("y", d => y(d.value))
+            .attr("height", d => y(0) - y(d.value))
+            .attr("width", x.bandwidth())
+            .attr("fill", "#ffcc00")
+            .attr("stroke", "#000")
+            .attr("stroke-width", 3)
+            .attr("filter", "url(#shadow-nb)");
+
+        svg.append("defs").append("filter")
+            .attr("id", "shadow-nb")
+            .html(`
+                <feDropShadow dx="4" dy="4" stdDeviation="0" flood-color="#000" flood-opacity="1"/>
+            `);
+
+        svg.append("g")
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x))
+            .call(g => g.selectAll("text")
+                .attr("transform", "rotate(-45)")
+                .style("text-anchor", "end")
+                .style("font-family", "Arial, sans-serif")
+                .style("font-weight", "bold")
+                .style("font-size", "1em")
+                .style("fill", "#000")
+            )
+            .call(g => g.selectAll("path, line")
+                .attr("stroke", "#000")
+                .attr("stroke-width", 3)
+            );
+
+        svg.append("g")
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y).ticks(8))
+            .call(g => g.selectAll("text")
+                .style("font-family", "Arial, sans-serif")
+                .style("font-weight", "bold")
+                .style("font-size", "1em")
+                .style("fill", "#000")
+            )
+            .call(g => g.selectAll("path, line")
+                .attr("stroke", "#000")
+                .attr("stroke-width", 3)
+            );
+
+        svg.append("text")
+            .attr("x", margin.left - 50)
+            .attr("y", margin.top - 10)
+            .attr("text-anchor", "start")
+            .attr("font-family", "Arial, sans-serif")
+            .attr("font-weight", "bold")
+            .attr("font-size", "1.1em")
+            .attr("fill", "#000")
+            .text("Frequência");
+
+        svg.append("text")
+            .attr("x", width / 2)
+            .attr("y", height - 60)
+            .attr("text-anchor", "middle")
+            .attr("font-family", "Arial, sans-serif")
+            .attr("font-weight", "bold")
+            .attr("font-size", "1.1em")
+            .attr("fill", "#000")
+            .text("Valor");
+    </script>
+{% endif %}
+{% endblock %}

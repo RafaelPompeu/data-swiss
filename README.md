@@ -6,7 +6,8 @@ DataSwiss é um conjunto de ferramentas web para facilitar tarefas comuns de dad
 
 - **Formatador JSON:** Cole seu JSON e obtenha uma versão formatada e legível.
 - **Formatador SQL:** Cole sua query SQL e veja o código organizado automaticamente.
-- **Interpretador Cron:** Monte e interprete expressões cron facilmente, com validação automática dos campos (apenas números, *, /, - e , são permitidos).
+- **Interpretador Cron:** Monte e interprete expressões cron facilmente.
+- **Visualizador Parquet:** Faça upload de um arquivo Parquet, visualize as 10 primeiras linhas, veja o dicionário de dados (nome, tipo, count) e gere um gráfico de frequência (top 30) de qualquer coluna.
 
 ## Como rodar localmente
 
