@@ -280,6 +280,18 @@ def parquet_view():
                 error = f"Erro ao ler o arquivo Parquet: {e}"
         else:
             error = "Envie um arquivo .parquet válido."
+    else:
+        # Resetar variáveis no GET para mostrar o formulário
+        table_html = None
+        columns = []
+        dicionario = []
+        freq_data = []
+        selected_col = None
+        error = None
+        total_count = None
+        distinct_total = None
+        parquet_file_id = None
+
     return render_template(
         'parquet.html',
         table_html=table_html,
