@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Formatador SQL - DataSwiss{% endblock %}
+
+{% block content %}
+    <h2>Formatador SQL</h2>
+    <p>Cole sua query SQL na área abaixo e clique em "Formatar".</p>
+    <form method="post">
+        <div class="formatter-container">
+            <div class="input-area">
+                <label for="input_sql">SQL de Entrada:</label>
+                <textarea id="input_sql" name="input_sql" rows="15" placeholder="SELECT id, nome, data_cadastro FROM usuarios WHERE ativo = 1 ORDER BY data_cadastro DESC;">{{ input_sql }}</textarea>
+            </div>
+
+            <!-- Botão Formatar movido de volta para o meio -->
+            <div class="submit-button-container">
+                 <button type="submit">Formatar SQL</button>
+            </div>
+
+            <div class="output-area">
+                 <!-- Label em cima -->
+                <label for="formatted_sql">SQL Formatado:</label>
+                <textarea id="formatted_sql" rows="15" readonly>{{ formatted_sql }}</textarea>
+                 <!-- Container para o botão Copiar -->
+                <div class="copy-button-container">
+                    <button type="button" class="copy-button" id="copy-sql-button" data-target="formatted_sql" title="Copiar SQL Formatado">Copiar</button>
+                </div>
+            </div>
+        </div>
+         <!-- Botão Formatar não está mais aqui -->
+    </form>
+{% endblock %}

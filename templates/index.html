@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}DataSwiss - Home{% endblock %}
+
+{% block content %}
+<div class="home-wrapper">
+    <h2 class="welcome-clean">
+        Bem-vindo ao <span class="logo-text">DataSwiss</span>
+    </h2>
+    <p class="home-desc">Seu conjunto de ferramentas para tarefas comuns de dados.</p>
+    <div class="home-divider"></div>
+    <p class="home-subdesc">Selecione uma ferramenta abaixo para começar:</p>
+    <div class="home-buttons">
+        <a href="{{ url_for('main.json_formatter') }}" class="home-btn">
+            <i class="fas fa-code"></i> Formatador JSON
+        </a>
+        <a href="{{ url_for('main.sql_formatter') }}" class="home-btn">
+            <i class="fas fa-database"></i> Formatador SQL
+        </a>
+    </div>
+</div>
+{% endblock %}

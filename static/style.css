@@ -1,0 +1,617 @@
+body {
+    font-family: 'Arial', sans-serif; /* Fonte sans-serif padrão */
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff; /* Fundo branco */
+    color: #000000; /* Texto preto */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    line-height: 1.6; /* Espaçamento entre linhas */
+    font-size: 1rem; /* Tamanho base da fonte */
+    -webkit-font-smoothing: antialiased; /* Melhora renderização da fonte */
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Container geral */
+.container {
+    width: 90%;
+    max-width: 950px; /* Largura máxima ajustada */
+    margin: 0 auto;
+}
+
+
+/* HEADER CLEAN E MODERNO */
+.site-header {
+    background-color: #fff;
+    color: #000;
+    padding: 1.2rem 0 1.2rem 0;
+    border-bottom: 2px solid #000;
+    box-shadow: 0 2px 0 #eee;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    letter-spacing: 1.5px;
+}
+
+.logo a {
+    color: #4B2991;
+    text-decoration: none;
+    border-bottom: 2px solid #4B2991;
+    transition: color 0.2s, border-bottom 0.2s;
+}
+
+.logo a:hover {
+    color: #ffcc00;
+    border-bottom: 2px solid #ffcc00;
+}
+
+.main-nav {
+    display: flex;
+    gap: 2.2rem;
+}
+
+.main-nav a {
+    color: #111;
+    font-size: 1.05rem;
+    font-weight: bold;
+    background: none;
+    border: none;
+    padding: 0;
+    text-decoration: none;
+    transition: color 0.18s;
+    letter-spacing: 0.5px;
+}
+
+.main-nav a.active,
+.main-nav a:hover {
+    color: #4B2991;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+/* Responsividade header */
+@media (max-width: 700px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.7em;
+        padding: 0 1rem;
+    }
+    .main-nav {
+        gap: 1.2rem;
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .logo {
+        font-size: 1.3rem;
+    }
+}
+
+/* Main Content Styles */
+main.container {
+    flex: 1;
+    padding: 2rem; /* Padding ajustado */
+    background-color: #ffffff;
+    box-shadow: 5px 5px 0px #000000; /* Sombra dura preta */
+    border: 3px solid #000000; /* Borda preta grossa */
+    border-radius: 0;
+    margin-top: 2rem; /* Espaçamento */
+    margin-bottom: 2rem;
+}
+
+h2 {
+    color: #000000;
+    border-bottom: 3px solid #000000; /* Borda preta grossa */
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+    font-size: 1.8rem; /* Tamanho ajustado */
+    font-weight: bold;
+    text-transform: uppercase; /* Caixa alta */
+    letter-spacing: 1px;
+}
+
+/* Estilos para listas e links dentro do conteúdo principal */
+main.container ul {
+    list-style: none; /* Remove marcadores padrão */
+    padding-left: 0; /* Remove padding padrão */
+    margin-top: 1.5rem;
+}
+
+main.container li {
+    margin-bottom: 1rem; /* Espaçamento entre itens da lista */
+    border: 2px solid #000000; /* Borda preta */
+    padding: 0.8rem; /* Padding interno */
+    box-shadow: 3px 3px 0px #aaaaaa; /* Sombra cinza */
+}
+
+main.container a {
+    color: #000000; /* Cor preta */
+    text-decoration: none; /* Sem sublinhado padrão */
+    font-weight: bold;
+    background-color: #ffcc00; /* Fundo amarelo */
+    padding: 3px 6px; /* Padding pequeno */
+    border: 2px solid #000000; /* Borda preta */
+    display: inline-block; /* Para padding e borda funcionarem bem */
+    transition: background-color 0.1s ease, transform 0.1s ease;
+}
+
+main.container a:hover {
+    background-color: #ffffff; /* Fundo branco no hover */
+    transform: translate(1px, 1px); /* Leve deslocamento */
+}
+
+/* Ajuste na sombra do textarea para consistência */
+textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 3px solid #000000; /* Borda preta grossa */
+    border-radius: 0;
+    font-family: 'Courier New', Courier, monospace; /* Fonte monoespaçada */
+    font-size: 1rem; /* Tamanho da fonte no textarea */
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 250px; /* Altura mínima aumentada */
+    background-color: #ffffff;
+    line-height: 1.5;
+    box-shadow: 4px 4px 0px #aaaaaa; /* Sombra cinza igual aos flashes */
+}
+
+textarea:focus {
+    outline: 3px solid #ffcc00; /* Outline mais grosso no foco */
+    box-shadow: 4px 4px 0px #000000; /* Sombra preta igual ao botão */
+}
+
+
+textarea[readonly] {
+    background-color: #f0f0f0; /* Cinza claro para readonly */
+    cursor: default;
+    color: #555;
+    box-shadow: none; /* Sem sombra para readonly */
+}
+
+button[type="submit"] {
+    background-color: #ffcc00; /* Amarelo */
+    color: #000000; /* Texto preto */
+    border: 3px solid #000000; /* Borda preta grossa */
+    padding: 0.8rem 2rem; /* Padding ajustado */
+    border-radius: 0;
+    cursor: pointer;
+    font-weight: bold; /* Negrito */
+    font-size: 1.1rem; /* Tamanho ajustado */
+    transition: background-color 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
+    font-family: 'Arial', sans-serif; /* Fonte padrão */
+    text-transform: uppercase;
+    box-shadow: 4px 4px 0px #000000; /* Sombra dura preta */
+}
+
+button[type="submit"]:hover {
+    background-color: #ffe066; /* Amarelo mais claro no hover */
+    color: #000000;
+    transform: translate(2px, 2px); /* Efeito de clique */
+    box-shadow: 2px 2px 0px #000000; /* Sombra menor no hover */
+}
+
+button[type="submit"]:active {
+    transform: translate(4px, 4px); /* Efeito de clique mais profundo */
+    box-shadow: 0px 0px 0px #000000; /* Sem sombra no active */
+}
+
+/* Estilos do Formatador */
+.formatter-container {
+    display: flex;
+    flex-wrap: wrap; /* Permitir wrap para responsividade */
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-start; /* Alinhar itens no topo por padrão */
+}
+
+.input-area, .output-area {
+    flex: 1;
+    min-width: calc(50% - 2rem); /* Restaurar largura mínima para layout lado-a-lado */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Remover estilos do output-header */
+/*
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem; 
+}
+.output-header label {
+    margin-bottom: 0; 
+}
+*/
+
+/* Ajustar label da área de saída */
+/* Padrão (SQL): label em cima */
+.output-area label {
+    margin-bottom: 0.5rem; /* Espaço abaixo do label */
+    margin-top: 0; /* Sem espaço extra acima */
+    order: 0; /* Garantir que o label venha antes por padrão */
+}
+/* Específico para JSON: label em baixo */
+#formatted_json + label[for="formatted_json"] {
+   margin-bottom: 0;
+   margin-top: 0.8rem;
+   order: 1; /* Coloca o label depois do textarea */
+}
+#formatted_json {
+    order: 0; /* Mantém o textarea antes do label no JSON */
+}
+#formatted_json ~ .copy-button-container {
+    order: 2; /* Garante que o botão copiar venha depois do label no JSON */
+}
+
+
+/* Estilo para o botão Copiar (sem alterações, apenas contexto) */
+.copy-button {
+    background-color: #ffffff; /* Fundo branco */
+    color: #000000; /* Texto preto */
+    border: 3px solid #000000; /* Borda preta mais grossa */
+    padding: 0.4rem 1rem; /* Padding ajustado */
+    border-radius: 0;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem; /* Fonte maior */
+    transition: background-color 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
+    font-family: 'Arial', sans-serif;
+    text-transform: uppercase;
+    box-shadow: 3px 3px 0px #000000; /* Sombra preta, igual ao botão principal mas talvez um pouco menor */
+    line-height: 1; /* Ajustar altura da linha para melhor alinhamento vertical */
+}
+
+.copy-button:hover {
+    background-color: #f0f0f0; /* Cinza claro no hover */
+    transform: translate(1px, 1px); /* Deslocamento menor */
+    box-shadow: 2px 2px 0px #000000; /* Sombra menor */
+}
+
+.copy-button:active {
+    transform: translate(3px, 3px); /* Deslocamento igual à sombra */
+    box-shadow: 0px 0px 0px #000000; /* Sem sombra */
+}
+
+.copy-button:disabled {
+    background-color: #ccffcc; /* Verde claro quando copiado */
+    color: #006400;
+    cursor: default;
+    box-shadow: 2px 2px 0px #006400; /* Sombra verde sutil */
+    transform: translate(1px, 1px); /* Leve deslocamento para indicar estado */
+    border-color: #006400; /* Borda verde */
+}
+
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #000000;
+    text-transform: uppercase; /* Caixa alta */
+    letter-spacing: 0.5px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px solid #000000; /* Borda preta */
+    border-radius: 0;
+    box-sizing: border-box;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-family: 'Courier New', Courier, monospace; /* Fonte monoespaçada */
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus {
+    outline: 3px solid #ffcc00; /* Outline amarelo */
+    border-color: #ffcc00; /* Borda amarela */
+}
+
+/* Estilos para tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse; /* Colapsar bordas */
+    margin-bottom: 2rem;
+}
+
+th, td {
+    padding: 0.8rem;
+    text-align: left;
+    border: 2px solid #000000; /* Borda preta */
+}
+
+th {
+    background-color: #f2f2f2; /* Cinza claro para o cabeçalho */
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9; /* Cinza muito claro para linhas pares */
+}
+
+/* Estilos para o formulário de contato */
+.contact-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-form label {
+    margin-bottom: 0.2rem;
+}
+
+.contact-form input,
+.contact-form textarea {
+    margin-bottom: 1rem;
+}
+
+/* Mensagens Flash */
+.flash-messages {
+    margin-bottom: 1.5rem;
+}
+.flash {
+    padding: 1rem; /* Padding aumentado */
+    margin-bottom: 1rem;
+    border-radius: 0;
+    border: 3px solid #000000; /* Borda preta grossa */
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 4px 4px 0px #aaaaaa; /* Sombra dura cinza */
+}
+.flash.error {
+    background-color: #ffcccc; /* Fundo vermelho claro */
+    color: #a30000; /* Texto vermelho escuro */
+    border-color: #a30000; /* Borda vermelha escura */
+    box-shadow: 4px 4px 0px #a30000; /* Sombra vermelha */
+}
+.flash.success {
+    background-color: #ccffcc; /* Fundo verde claro */
+    color: #006400; /* Texto verde escuro */
+    border-color: #006400; /* Borda verde escura */
+    box-shadow: 4px 4px 0px #006400; /* Sombra verde */
+}
+
+
+/* Centralizar botão de submit */
+.submit-button-container {
+    width: 100%;
+    text-align: center;
+    padding: 1rem 0 0.5rem 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* Centralizar botão copiar */
+.copy-button-container {
+    text-align: center;
+    margin-top: 0.8rem;
+    display: flex;
+    justify-content: center;
+}
+
+/* Footer sem fundo amarelo */
+.site-footer {
+    background: #fff;
+    color: #000;
+    text-align: center;
+    padding: 1.5rem 0; /* Aumentar padding do footer */
+    margin-top: auto;
+    font-size: 1rem; /* Aumentar fonte do footer */
+    border-top: 3px solid #000;
+    font-weight: bold;
+}
+
+/* Remover gradiente do footer */
+.site-footer .logo-text {
+    color: #000;
+    background: #ffcc00;
+    padding: 0.1em 0.5em;
+    border-radius: 6px;
+    font-size: 1em;
+}
+.site-footer .social-links {
+    margin-top: 0.5em;
+}
+.site-footer .social-links a {
+    color: #000;
+    margin: 0 0.5em;
+    font-size: 1.3em;
+    transition: color 0.2s;
+}
+.site-footer .social-links a:hover {
+    color: #ffcc00;
+}
+
+/* Responsividade para header e logo */
+@media (max-width: 600px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.7em;
+    }
+    .logo {
+        font-size: 1.5rem;
+    }
+    .main-nav {
+        gap: 0.5rem;
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+/* Página inicial aprimorada */
+.home-wrapper {
+    max-width: 520px;
+    margin: 2.5rem auto 2rem auto;
+    background: #fff;
+    border: 3px solid #000;
+    box-shadow: 6px 6px 0 #ffcc00;
+    border-radius: 10px;
+    padding: 2.5rem 2rem 2rem 2rem;
+    text-align: center;
+}
+
+.home-title {
+    font-size: 2.1rem;
+    font-weight: bold;
+    margin-bottom: 0.7rem;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    letter-spacing: 1px;
+}
+
+.home-title .logo-text {
+    color: #ffcc00;
+    background: #000;
+    padding: 0.1em 0.5em;
+    border-radius: 6px;
+    font-size: 1.1em;
+    margin-left: 0.3em;
+}
+
+.home-desc {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.home-divider {
+    width: 60%;
+    height: 3px;
+    background: #000;
+    margin: 1.2rem auto 1.2rem auto;
+    border-radius: 2px;
+}
+
+.home-subdesc {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 1.5rem;
+}
+
+.home-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    background: #ffcc00;
+    color: #000;
+    border: 2.5px solid #000;
+    border-radius: 6px;
+    font-size: 1.15rem;
+    font-weight: bold;
+    padding: 0.85em 2.2em;
+    text-decoration: none;
+    box-shadow: 3px 3px 0 #000;
+    transition: background 0.15s, color 0.15s, box-shadow 0.15s, transform 0.1s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.home-btn i {
+    font-size: 1.2em;
+}
+
+.home-btn:hover, .home-btn:focus {
+    background: #000;
+    color: #ffcc00;
+    box-shadow: 1px 1px 0 #ffcc00;
+    transform: translate(2px,2px);
+}
+
+@media (max-width: 700px) {
+    .home-wrapper {
+        max-width: 98vw;
+        padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+    }
+    .home-title {
+        font-size: 1.3rem;
+    }
+    .home-btn {
+        font-size: 1rem;
+        padding: 0.7em 1.2em;
+    }
+}
+
+.welcome-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 0.7rem;
+    letter-spacing: 1px;
+    color: #000;
+}
+
+.welcome-text {
+    color: #222;
+    font-size: 1.3em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 0 #ffcc00;
+}
+
+.welcome-dot {
+    color: #ffcc00;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-left: 0.1em;
+    margin-top: -0.1em;
+}
+
+.welcome-clean {
+    text-align: center;
+    font-size: 2.1rem;
+    font-weight: bold;
+    margin-bottom: 0.7rem;
+    color: #222;
+    letter-spacing: 1px;
+    line-height: 1.2;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+.welcome-clean .logo-text {
+    color: #ffcc00;
+    background: none;
+    padding: 0 0.2em;
+    border-radius: 0;
+    font-size: 1em;
+    margin-left: 0.2em;
+}

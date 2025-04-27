@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DataSwiss{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-content">
+            <h1 class="logo">
+                <a href="{{ url_for('main.index') }}">
+                    <span class="logo-text">DataSwiss</span>
+                </a>
+            </h1>
+            <nav class="main-nav">
+                <a href="{{ url_for('main.json_formatter') }}" class="{{ 'active' if request.endpoint == 'main.json_formatter' else '' }}">Formatador JSON</a>
+                <a href="{{ url_for('main.sql_formatter') }}" class="{{ 'active' if request.endpoint == 'main.sql_formatter' else '' }}">Formatador SQL</a>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <p>&copy; 2025 <span class="logo-text">DataSwiss</span>. Todos os direitos reservados.</p>
+            <div class="social-links">
+                <a href="https://github.com/RafaelPompeu/data-swiss" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/rafael-pompeu-p/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyButtons = document.querySelectorAll('.copy-button');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const targetTextarea = document.getElementById(targetId);
+                    if (targetTextarea && targetTextarea.value) {
+                        navigator.clipboard.writeText(targetTextarea.value)
+                            .then(() => {
+                                const originalText = this.textContent;
+                                this.textContent = 'Copiado!';
+                                this.disabled = true;
+                                setTimeout(() => {
+                                    this.textContent = originalText;
+                                    this.disabled = false;
+                                }, 1500);
+                            })
+                            .catch(err => {
+                                alert('Falha ao copiar texto.');
+                            });
+                    } else {
+                        alert('Nada para copiar.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

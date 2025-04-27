@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Formatador JSON - DataSwiss{% endblock %}
+
+{% block content %}
+    <h2>Formatador JSON</h2>
+    <p>Cole seu JSON na área abaixo e clique em "Formatar".</p>
+    <form method="post">
+        <div class="formatter-container">
+            <div class="input-area">
+                <label for="input_json">JSON de Entrada:</label>
+                <textarea id="input_json" name="input_json" rows="15" placeholder='{ "nome": "DataSwiss", "versao": 1.0, "ferramentas": ["JSON", "SQL"] }'>{{ input_json }}</textarea>
+            </div>
+
+            <div class="submit-button-container">
+                <button type="submit">Formatar JSON</button>
+            </div>
+
+            <div class="output-area">
+                <!-- Label agora em cima -->
+                <label for="formatted_json">JSON Formatado:</label>
+                <textarea id="formatted_json" rows="15" readonly>{{ formatted_json }}</textarea>
+                <div class="copy-button-container">
+                     <button type="button" class="copy-button" id="copy-json-button" data-target="formatted_json" title="Copiar JSON Formatado">Copiar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
