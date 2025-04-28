@@ -19,6 +19,7 @@
                 <a href="{{ url_for('main.json_formatter') }}" class="{{ 'active' if request.endpoint == 'main.json_formatter' else '' }}">Formatador JSON</a>
                 <a href="{{ url_for('main.sql_formatter') }}" class="{{ 'active' if request.endpoint == 'main.sql_formatter' else '' }}">Formatador SQL</a>
                 <a href="{{ url_for('main.cron_guru') }}" class="{{ 'active' if request.endpoint == 'main.cron_guru' else '' }}">Interpretador Cron</a>
+                <a href="{{ url_for('main.parquet_view') }}" class="{{ 'active' if request.endpoint == 'main.parquet_view' else '' }}">Visualizador Parquet</a>
             </nav>
         </div>
     </header>
