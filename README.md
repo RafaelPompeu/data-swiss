@@ -1,5 +1,7 @@
 # DataSwiss
 
+![Home](home.png)
+
 DataSwiss é um conjunto de ferramentas web para facilitar tarefas comuns de dados, como formatação de JSON e SQL.
 
 ## Funcionalidades

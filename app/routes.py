@@ -61,7 +61,6 @@ def sql_formatter():
     return render_template('sql_formatter.html', input_sql=input_sql, formatted_sql=formatted_sql)
 
 def traduzir_cron_descricao(desc):
-    # Traduções simples
     traducoes = [
         (r"\bEvery minute\b", "A cada minuto"),
         (r"\bEvery hour\b", "A cada hora"),
@@ -101,7 +100,6 @@ def traduzir_cron_descricao(desc):
         (r"\.", "."),
     ]
 
-    # Horários tipo 10:00 AM/PM
     def traduzir_horario(match):
         hora, minuto, periodo = match.groups()
         hora = int(hora)
@@ -113,74 +111,58 @@ def traduzir_cron_descricao(desc):
 
     desc = re.sub(r'(\d{1,2}):(\d{2}) (AM|PM)', traduzir_horario, desc)
 
-    # Tradução de padrões compostos
     desc = re.sub(r'on day (\d+) of the month', r'no dia \1 do mês', desc)
     desc = re.sub(r'on days? ([\d,-]+) of the month', r'nos dias \1 do mês', desc)
     desc = re.sub(r'on (\d{1,2}):(\d{2})', r'às \1:\2', desc)
 
-    # "only on Monday" -> "somente na segunda-feira"
     desc = re.sub(r'only on ([a-zA-Z-]+)', r'somente na \1', desc)
-    # "only on <mês>" ou "only in <mês>" -> "somente em <mês>"
     desc = re.sub(
         r'only (on|in) (janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)',
         r'somente em \2', desc, flags=re.IGNORECASE)
-    # "only <mês>" -> "somente em <mês>"
     desc = re.sub(
         r'only (janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)',
         r'somente em \1', desc, flags=re.IGNORECASE)
-    # "only <dia-da-semana>" -> "somente na <dia-da-semana>"
     desc = re.sub(
         r'only (segunda-feira|terça-feira|quarta-feira|quinta-feira|sexta-feira|sábado|domingo)',
         r'somente na \1', desc, flags=re.IGNORECASE)
-    # Remove qualquer "only in" ou "only on" residual (caso não tenha sido traduzido)
     desc = re.sub(r'only (in|on) ([a-zA-Z-]+)', r'somente em \2', desc, flags=re.IGNORECASE)
     desc = re.sub(r'only ([a-zA-Z-]+)', r'somente em \1', desc, flags=re.IGNORECASE)
-    # Corrige "somente na em" para "somente em"
     desc = re.sub(r'somente na em', 'somente em', desc)
     desc = re.sub(r'somente na\s+em', 'somente em', desc)
-    # Remove "only in <mês>" que não foi traduzido por erro de case
     desc = re.sub(
         r'only in (janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)',
         r'somente em \1', desc, flags=re.IGNORECASE)
 
-    # "on <mês>" ou "in <mês>" -> "em <mês>"
     desc = re.sub(
         r'(on|in) (janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)',
         r'em \2', desc, flags=re.IGNORECASE)
-    # "on <dia-da-semana>" -> "na <dia-da-semana>"
     desc = re.sub(
         r'on (segunda-feira|terça-feira|quarta-feira|quinta-feira|sexta-feira|sábado|domingo)',
         r'na \1', desc, flags=re.IGNORECASE)
 
-    # Traduções simples
     for padrao, pt in traducoes:
         desc = re.sub(padrao, pt, desc)
 
-    # Ajustes finais para conectores e fluidez
     desc = re.sub(r", e", " e", desc)
     desc = re.sub(r",,", ",", desc)
     desc = re.sub(r"  +", " ", desc)
     desc = desc.strip()
 
-    # Ajuste de pluralização para dias e meses
     desc = re.sub(r"Todos os dia do mês", "Todo dia do mês", desc)
     desc = re.sub(r"Todos os dias do mês", "Todos os dias do mês", desc)
     desc = re.sub(r"Todos os mês", "Todo mês", desc)
     desc = re.sub(r"Todos os meses", "Todos os meses", desc)
 
-    # Ajuste para frases mais naturais
     desc = re.sub(r"Às (\d{2}:\d{2})", r"Às \1", desc)
-    desc = re.sub(r"às (\d{2}:\d{2})", r"às \1", desc)
+    desc = re.sub(r"às (\d{2}:\d{2})", r"às \1")
     desc = re.sub(r"(\d{2}:\d{2}) da manhã", r"\1", desc)
     desc = re.sub(r"(\d{2}:\d{2}) da tarde", r"\1", desc)
 
-    # Primeira letra maiúscula
     if desc:
         desc = desc[0].upper() + desc[1:]
     return desc
 
 def validar_campo_cron(valor, campo):
-    # Define padrões válidos para cada campo do crontab
     padroes = {
         'minute': r'^[\d\*,\/\-]+$',
         'hour': r'^[\d\*,\/\-]+$',
@@ -188,7 +170,6 @@ def validar_campo_cron(valor, campo):
         'month': r'^[\d\*,\/\-]+$',
         'weekday': r'^[\d\*,\/\-]+$',
     }
-    # Aceita apenas números, *, /, - e ,
     if not re.match(padroes[campo], valor):
         return False
     return True
@@ -243,7 +224,6 @@ def parquet_view():
         parquet_file_id = request.form.get('parquet_file_id')
 
         if parquet_file_id:
-            # Seleção de coluna: carrega arquivo temporário
             temp_path = os.path.join(UPLOAD_FOLDER, parquet_file_id)
             if os.path.exists(temp_path):
                 try:
@@ -269,7 +249,6 @@ def parquet_view():
             else:
                 error = "Arquivo temporário não encontrado. Por favor, envie o arquivo novamente."
         elif file and file.filename.endswith('.parquet'):
-            # Upload inicial: salva arquivo temporário
             import uuid
             parquet_file_id = str(uuid.uuid4()) + '.parquet'
             temp_path = os.path.join(UPLOAD_FOLDER, parquet_file_id)
@@ -297,7 +276,6 @@ def parquet_view():
         else:
             error = "Envie um arquivo .parquet válido."
     else:
-        # Resetar variáveis no GET para mostrar o formulário
         table_html = None
         columns = []
         dicionario = []
