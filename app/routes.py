@@ -65,9 +65,9 @@ def traduzir_cron_descricao(desc):
     traducoes = [
         (r"\bEvery minute\b", "A cada minuto"),
         (r"\bEvery hour\b", "A cada hora"),
-        (r"\bEvery day\b", "Todo dia"),
-        (r"\bEvery month\b", "Todo mês"),
-        (r"\bEvery year\b", "Todo ano"),
+        (r"\bEvery day\b", "Todos os dias"),
+        (r"\bEvery month\b", "Todos os meses"),
+        (r"\bEvery year\b", "Todos os anos"),
         (r"\bAt\b", "Às"),
         (r"\bat\b", "às"),
         (r"\bAnd\b", "e"),
@@ -132,6 +132,9 @@ def traduzir_cron_descricao(desc):
     desc = re.sub(
         r'only (segunda-feira|terça-feira|quarta-feira|quinta-feira|sexta-feira|sábado|domingo)',
         r'somente na \1', desc, flags=re.IGNORECASE)
+    # Remove qualquer "only in" ou "only on" residual (caso não tenha sido traduzido)
+    desc = re.sub(r'only (in|on) ([a-zA-Z-]+)', r'somente em \2', desc, flags=re.IGNORECASE)
+    desc = re.sub(r'only ([a-zA-Z-]+)', r'somente em \1', desc, flags=re.IGNORECASE)
     # Corrige "somente na em" para "somente em"
     desc = re.sub(r'somente na em', 'somente em', desc)
     desc = re.sub(r'somente na\s+em', 'somente em', desc)
@@ -154,10 +157,23 @@ def traduzir_cron_descricao(desc):
         desc = re.sub(padrao, pt, desc)
 
     # Ajustes finais para conectores e fluidez
-    desc = desc.replace(", e", " e")
-    desc = desc.replace(",,", ",")
-    desc = desc.replace("  ", " ")
+    desc = re.sub(r", e", " e", desc)
+    desc = re.sub(r",,", ",", desc)
+    desc = re.sub(r"  +", " ", desc)
     desc = desc.strip()
+
+    # Ajuste de pluralização para dias e meses
+    desc = re.sub(r"Todos os dia do mês", "Todo dia do mês", desc)
+    desc = re.sub(r"Todos os dias do mês", "Todos os dias do mês", desc)
+    desc = re.sub(r"Todos os mês", "Todo mês", desc)
+    desc = re.sub(r"Todos os meses", "Todos os meses", desc)
+
+    # Ajuste para frases mais naturais
+    desc = re.sub(r"Às (\d{2}:\d{2})", r"Às \1", desc)
+    desc = re.sub(r"às (\d{2}:\d{2})", r"às \1", desc)
+    desc = re.sub(r"(\d{2}:\d{2}) da manhã", r"\1", desc)
+    desc = re.sub(r"(\d{2}:\d{2}) da tarde", r"\1", desc)
+
     # Primeira letra maiúscula
     if desc:
         desc = desc[0].upper() + desc[1:]
